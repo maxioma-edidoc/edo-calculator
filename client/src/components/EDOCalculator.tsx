@@ -406,19 +406,11 @@ export default function EDOCalculator() {
             </div>
           </Card>
 
-          {/* Кнопки */}
-          <div className="flex gap-4">
+          {/* Единственное действие после результата */}
+          <div className="flex">
             <Button
               onClick={handleRestart}
-              variant="outline"
-              className="flex-1 h-12"
-            >
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Изменить ответы
-            </Button>
-            <Button
-              onClick={handleRestart}
-              className="flex-1 h-12 bg-[#ED6C0E] hover:bg-[#C85A0B]"
+              className="w-full h-12 bg-[#ED6C0E] hover:bg-[#C85A0B]"
             >
               Начать заново
             </Button>

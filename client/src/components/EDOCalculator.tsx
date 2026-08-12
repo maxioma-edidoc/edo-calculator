@@ -20,6 +20,7 @@ interface Answer {
 
 interface Results {
   monthlySavingsHours: number;
+  annualSavingsHours: number;
   invoicesNotPrinted: number;
   readinessPct: number;
   readinessLevel: 'high' | 'medium' | 'low';
@@ -183,12 +184,28 @@ export default function EDOCalculator() {
     const invoicesPerMonth = invoiceMultipliers[answers.invoicesPerMonth || 'medium'] || 35;
     const timePerInvoice = timeMultipliers[answers.timePerInvoice || 'normal'] || 7.5;
 
-    // Расчёт экономии времени
-    let processSteps = (answers.paperProcess as string[])?.length || 0;
-    if (processSteps === 0) processSteps = 3;
-
-    const monthlySavingsMinutes = invoicesPerMonth * timePerInvoice * (processSteps / 6);
-    const monthlySavingsHours = Math.round(monthlySavingsMinutes / 60);
+    // Прозрачный расчёт полного потенциала экономии.
+    // Учитываем не только оформление, но и выбранные операции бумажного процесса.
+    const selectedPaperProcess = (answers.paperProcess as string[]) || [];
+    const processMinutesByStep: Record<string, number> = {
+      print: 1.5,
+      sign: 2,
+      stamp: 0.5,
+      scan: 2,
+      send: 3,
+      archive: 1.5,
+    };
+    const workflowMinutesPerInvoice = selectedPaperProcess.reduce(
+      (total, step) => total + (processMinutesByStep[step] || 0),
+      0,
+    );
+    const coordinationMinutesPerInvoice = selectedPaperProcess.length > 0 ? 0 : 5.5;
+    const preparationMinutesPerInvoice = Math.min(timePerInvoice * 0.35, 8);
+    const monthlySavingsMinutes = invoicesPerMonth * (
+      preparationMinutesPerInvoice + workflowMinutesPerInvoice + coordinationMinutesPerInvoice
+    );
+    const monthlySavingsHours = Math.max(1, Math.round(monthlySavingsMinutes / 60));
+    const annualSavingsHours = monthlySavingsHours * 12;
 
     // Документы, которые не будут напечатаны
     const invoicesNotPrinted = (answers.paperProcess as string[])?.includes('print')
@@ -244,6 +261,7 @@ export default function EDOCalculator() {
 
     setResults({
       monthlySavingsHours: isAlreadyOnEDO ? 0 : monthlySavingsHours,
+      annualSavingsHours: isAlreadyOnEDO ? 0 : annualSavingsHours,
       invoicesNotPrinted: isAlreadyOnEDO ? 0 : invoicesNotPrinted,
       readinessPct: isAlreadyOnEDO ? 100 : readinessPct,
       readinessLevel: isAlreadyOnEDO ? 'high' : readinessLevel,
@@ -296,9 +314,9 @@ export default function EDOCalculator() {
                     <Clock className="w-6 h-6 text-orange-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Экономия в месяц</p>
+                    <p className="text-sm text-gray-600">Потенциальная экономия</p>
                     <p className="text-3xl font-bold text-gray-900">{isAlreadyOnEDO ? '—' : results.monthlySavingsHours}</p>
-                    <p className="text-xs text-gray-500">{isAlreadyOnEDO ? 'уже работаете в ЭДО' : 'часов'}</p>
+                    <p className="text-xs text-gray-500">{isAlreadyOnEDO ? 'уже работаете в ЭДО' : `часов в месяц · ${results.annualSavingsHours} ч/год`}</p>
                   </div>
                 </div>
               </div>
@@ -353,6 +371,12 @@ export default function EDOCalculator() {
               <Progress value={results.readinessPct} className="h-2" />
             </Card>
           </div>
+          )}
+
+          {!isAlreadyOnEDO && (
+            <p className="mb-8 text-center text-xs leading-5 text-gray-500">
+              Оценка учитывает время на оформление накладной и выбранные операции с бумагой: печать, подпись, сканирование, отправку и архивирование. Это ориентир для оценки потенциала, а не гарантированный результат.
+            </p>
           )}
 
           {/* Рекомендации */}

@@ -1,4 +1,4 @@
-/* Style: Динамичный B2B SaaS — оранжевый акцент, видимый прогресс, карточки-решения и ясный путь к результату. */
+/* Style: Динамичный B2B SaaS — фирменный акцент #ED6C0E, видимый прогресс, карточки-решения и ясный путь к результату. */
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -277,7 +277,7 @@ export default function EDOCalculator() {
 
   if (results) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white py-12 px-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#FFF6EF] to-white py-12 px-4">
         <div className="max-w-2xl mx-auto">
           {/* Заголовок результатов */}
           <div className="text-center mb-8">
@@ -292,11 +292,11 @@ export default function EDOCalculator() {
           {isAlreadyOnEDO ? (
             <Card className="mb-8 overflow-hidden border-0 bg-slate-900 p-7 text-white shadow-xl shadow-slate-900/10">
               <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-500 text-white">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#ED6C0E] text-white">
                   <CheckCircle2 className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-orange-300">Вы уже на ЭДО</p>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#F5A56D]">Вы уже на ЭДО</p>
                   <h2 className="font-display mb-3 text-2xl font-bold">Теперь главное — удобство вашей EDI-системы</h2>
                   <p className="text-sm leading-6 text-slate-300">Проверьте, насколько понятен интерфейс провайдера, быстро ли подключаются контрагенты и удобно ли обрабатывать входящие документы.</p>
                 </div>
@@ -310,8 +310,8 @@ export default function EDOCalculator() {
             <Card className="p-6 border-0 shadow-lg hover:shadow-xl transition-shadow">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-lg bg-orange-100">
-                    <Clock className="w-6 h-6 text-orange-600" />
+                  <div className="p-3 rounded-lg bg-[#FBE3D1]">
+                    <Clock className="w-6 h-6 text-[#ED6C0E]" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Потенциальная экономия</p>
@@ -382,13 +382,13 @@ export default function EDOCalculator() {
           {/* Рекомендации */}
           <Card className="p-6 border-0 shadow-lg mb-8">
             <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-5 h-5 text-orange-600" />
+              <Zap className="w-5 h-5 text-[#ED6C0E]" />
               <h3 className="text-lg font-semibold text-gray-900">Рекомендации</h3>
             </div>
             <ul className="space-y-3">
               {results.recommendations.map((rec, idx) => (
                 <li key={idx} className="flex gap-3 text-sm text-gray-700">
-                  <span className="text-orange-600 font-bold">✓</span>
+                  <span className="text-[#ED6C0E] font-bold">✓</span>
                   <span>{rec}</span>
                 </li>
               ))}
@@ -396,13 +396,13 @@ export default function EDOCalculator() {
           </Card>
 
           {/* Финальный CTA — единая формулировка EDIDOC для любого результата */}
-          <Card className="mb-8 border-0 bg-orange-50 p-6 shadow-lg shadow-orange-100/60">
+          <Card className="mb-8 border-0 bg-[#FFF6EF] p-6 shadow-lg shadow-[#FBE3D1]/60">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="font-display text-lg font-bold text-gray-900">EDIDOC — аттестованный EDI-провайдер Беларуси</p>
                 <p className="mt-2 text-sm leading-6 text-gray-700">Регистрация в 2 клика, все входящие бесплатны — без тарификации и абонентской платы.</p>
               </div>
-              <a href="https://edidoc.by/" target="_blank" rel="noreferrer" className="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-orange-600 px-5 text-sm font-semibold text-white transition hover:bg-orange-700">Перейти в EDIDOC <ChevronRight className="ml-2 h-4 w-4" /></a>
+              <a href="https://edidoc.by/" target="_blank" rel="noreferrer" className="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-[#ED6C0E] px-5 text-sm font-semibold text-white transition hover:bg-[#C85A0B]">Перейти в EDIDOC <ChevronRight className="ml-2 h-4 w-4" /></a>
             </div>
           </Card>
 
@@ -418,7 +418,7 @@ export default function EDOCalculator() {
             </Button>
             <Button
               onClick={handleRestart}
-              className="flex-1 h-12 bg-orange-600 hover:bg-orange-700"
+              className="flex-1 h-12 bg-[#ED6C0E] hover:bg-[#C85A0B]"
             >
               Начать заново
             </Button>
@@ -429,32 +429,32 @@ export default function EDOCalculator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF6EF] to-white py-12 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Логотип */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-orange-600 shadow-lg shadow-orange-600/20 mb-4 overflow-hidden">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#ED6C0E] shadow-lg shadow-[#ED6C0E]/20 mb-4 overflow-hidden">
             <img src={`${import.meta.env.BASE_URL}edo_logo.png`} alt="ЭДО" className="w-10 h-10 object-contain" />
           </div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-orange-600 mb-2">Путь к эффективности</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#ED6C0E] mb-2">Путь к эффективности</p>
           <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">Калькулятор ЭДО</h1>
           <p className="text-gray-600">За 2 минуты узнайте, сколько времени сможет сэкономить ваша компания</p>
         </div>
 
         {/* Прогресс-бар — фирменная rail-метафора движения к результату */}
-        <div className="mb-8 rounded-2xl border border-orange-100 bg-white/80 p-4 shadow-sm">
+        <div className="mb-8 rounded-2xl border border-[#FBE3D1] bg-white/80 p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Ваш расчёт</p>
               <p className="font-display text-sm font-semibold text-gray-900">Шаг {currentStep + 1} из {questions.length}</p>
             </div>
             <div className="text-right">
-              <p className="font-display text-xl font-bold text-orange-600">{Math.round(progress)}%</p>
+              <p className="font-display text-xl font-bold text-[#ED6C0E]">{Math.round(progress)}%</p>
               <p className="text-xs text-gray-500">до результата</p>
             </div>
           </div>
           <div className="relative mb-3">
-            <Progress value={progress} className="h-3 bg-orange-100 [&>div]:bg-orange-600" />
+            <Progress value={progress} className="h-3 bg-[#FBE3D1] [&>div]:bg-[#ED6C0E]" />
           </div>
           <div className="grid grid-cols-7 gap-1">
               {visibleQuestions.map((question, index) => {
@@ -462,10 +462,10 @@ export default function EDOCalculator() {
               const isCurrent = index === currentStep;
               return (
                 <div key={question.id} className="flex flex-col items-center gap-1">
-                  <div className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold transition-colors ${isComplete ? 'bg-emerald-500 text-white' : isCurrent ? 'bg-orange-600 text-white ring-4 ring-orange-100' : 'bg-orange-100 text-orange-700'}`}>
+                  <div className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold transition-colors ${isComplete ? 'bg-emerald-500 text-white' : isCurrent ? 'bg-[#ED6C0E] text-white ring-4 ring-[#FBE3D1]' : 'bg-[#FBE3D1] text-[#C85A0B]'}`}>
                     {isComplete ? '✓' : index + 1}
                   </div>
-                  <span className={`hidden text-[9px] font-medium sm:block ${isCurrent ? 'text-orange-700' : 'text-gray-400'}`}>{index === currentStep ? 'сейчас' : isComplete ? 'готово' : 'дальше'}</span>
+                  <span className={`hidden text-[9px] font-medium sm:block ${isCurrent ? 'text-[#C85A0B]' : 'text-gray-400'}`}>{index === currentStep ? 'сейчас' : isComplete ? 'готово' : 'дальше'}</span>
                 </div>
               );
             })}
@@ -476,11 +476,11 @@ export default function EDOCalculator() {
         <Card className="p-8 border-0 shadow-lg mb-8">
           <div className="mb-6">
             <div className="mb-4 flex items-start gap-4">
-              <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-orange-600">
+              <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#FBE3D1] text-[#ED6C0E]">
                 <QuestionIcon className="h-5 w-5" />
               </div>
               <div>
-                <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-orange-600">Уточним детали</p>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#ED6C0E]">Уточним детали</p>
                 <h2 className="font-display text-2xl font-bold leading-tight text-gray-900">{currentQuestion.title}</h2>
               </div>
             </div>
@@ -496,11 +496,11 @@ export default function EDOCalculator() {
                 {currentQuestion.options?.map((option, optionIndex) => {
                   const selected = answers[currentQuestion.id as keyof Answer] === option.value;
                   return (
-                    <div key={option.value} className={`group flex items-center gap-3 rounded-2xl border p-4 transition-all duration-200 ${selected ? 'border-orange-500 bg-orange-50 shadow-sm shadow-orange-100' : 'border-gray-100 bg-gray-50/70 hover:-translate-y-0.5 hover:border-orange-200 hover:bg-white hover:shadow-md'}`}>
-                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${selected ? 'bg-orange-600 text-white' : 'bg-white text-gray-400 shadow-sm'}`}>{String(optionIndex + 1).padStart(2, '0')}</div>
+                    <div key={option.value} className={`group flex items-center gap-3 rounded-2xl border p-4 transition-all duration-200 ${selected ? 'border-[#ED6C0E] bg-[#FFF6EF] shadow-sm shadow-[#FBE3D1]' : 'border-gray-100 bg-gray-50/70 hover:-translate-y-0.5 hover:border-[#F7C2A0] hover:bg-white hover:shadow-md'}`}>
+                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${selected ? 'bg-[#ED6C0E] text-white' : 'bg-white text-gray-400 shadow-sm'}`}>{String(optionIndex + 1).padStart(2, '0')}</div>
                       <RadioGroupItem value={option.value} id={option.value} className="shrink-0" />
                       <Label htmlFor={option.value} className="flex-1 cursor-pointer font-medium text-gray-800">{option.label}</Label>
-                      <ChevronRight className={`h-4 w-4 transition-transform ${selected ? 'translate-x-0.5 text-orange-600' : 'text-gray-300 group-hover:translate-x-0.5 group-hover:text-orange-400'}`} />
+                      <ChevronRight className={`h-4 w-4 transition-transform ${selected ? 'translate-x-0.5 text-[#ED6C0E]' : 'text-gray-300 group-hover:translate-x-0.5 group-hover:text-[#F19250]'}`} />
                     </div>
                   );
                 })}
@@ -543,7 +543,7 @@ export default function EDOCalculator() {
             <Button
               onClick={handleNext}
               disabled={!isAnswered}
-              className="flex-1 h-12 bg-orange-600 hover:bg-orange-700 disabled:opacity-50"
+              className="flex-1 h-12 bg-[#ED6C0E] hover:bg-[#C85A0B] disabled:opacity-50"
             >
               {currentStep === visibleQuestions.length - 1 ? 'Получить результаты' : 'Далее'}
               <ChevronRight className="w-4 h-4 ml-2" />

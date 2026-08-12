@@ -1,0 +1,537 @@
+/* Style: Динамичный B2B SaaS — оранжевый акцент, видимый прогресс, карточки-решения и ясный путь к результату. */
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { Progress } from '@/components/ui/progress';
+import { Card } from '@/components/ui/card';
+import { Building2, ChevronRight, ChevronLeft, Clock, FileText, Repeat2, ClipboardList, Clock3, TriangleAlert, Target, AlertCircle, CheckCircle2, Zap, type LucideIcon } from 'lucide-react';
+
+interface Answer {
+  companySize?: string;
+  invoicesPerMonth?: string;
+  workMethod?: string;
+  paperProcess?: string[];
+  timePerInvoice?: string;
+  problems?: string[];
+  priority?: string;
+}
+
+interface Results {
+  monthlySavingsHours: number;
+  invoicesNotPrinted: number;
+  readinessPct: number;
+  readinessLevel: 'high' | 'medium' | 'low';
+  recommendations: string[];
+}
+
+const questions = [
+  {
+    id: 'companySize',
+    icon: Building2,
+    title: 'Какая у вас компания?',
+    description: 'Это нужно для расчета',
+    type: 'radio',
+    options: [
+      { value: 'ip', label: 'ИП' },
+      { value: 'small', label: 'До 10 сотрудников' },
+      { value: 'medium', label: '10–50 сотрудников' },
+      { value: 'large', label: 'Более 50 сотрудников' },
+    ],
+  },
+  {
+    id: 'invoicesPerMonth',
+    icon: FileText,
+    title: 'Сколько накладных оформляет ваша компания в месяц?',
+    type: 'radio',
+    options: [
+      { value: 'low', label: 'До 20' },
+      { value: 'medium', label: '20–50' },
+      { value: 'high', label: '50–100' },
+      { value: 'veryHigh', label: 'Более 100' },
+    ],
+  },
+  {
+    id: 'workMethod',
+    icon: Repeat2,
+    title: 'Как вы сейчас работаете с накладными?',
+    type: 'radio',
+    options: [
+      { value: 'paperOnly', label: 'Только бумажные' },
+      { value: 'mixed', label: 'И бумажные, и электронные' },
+      { value: 'digitalOnly', label: 'Только электронные' },
+    ],
+  },
+  {
+    id: 'paperProcess',
+    icon: ClipboardList,
+    title: 'Что происходит с бумажной накладной после оформления?',
+    description: 'Можно выбрать несколько вариантов',
+    type: 'checkbox',
+    options: [
+      { value: 'print', label: 'Распечатываем' },
+      { value: 'sign', label: 'Подписываем' },
+      { value: 'stamp', label: 'Ставим печать' },
+      { value: 'scan', label: 'Сканируем' },
+      { value: 'send', label: 'Отправляем почтой/курьером' },
+      { value: 'archive', label: 'Храним в архиве' },
+    ],
+  },
+  {
+    id: 'timePerInvoice',
+    icon: Clock3,
+    title: 'Сколько времени в среднем занимает оформление одной накладной?',
+    type: 'radio',
+    options: [
+      { value: 'quick', label: 'До 5 минут' },
+      { value: 'normal', label: '5–10 минут' },
+      { value: 'slow', label: '10–20 минут' },
+      { value: 'verySlow', label: 'Более 20 минут' },
+    ],
+  },
+  {
+    id: 'problems',
+    icon: TriangleAlert,
+    title: 'С какими ситуациями вы сталкивались за последний месяц?',
+    description: 'Множественный выбор',
+    type: 'checkbox',
+    options: [
+      { value: 'printerJam', label: 'Принтер зажевал документ' },
+      { value: 'noPaper', label: 'Закончилась бумага' },
+      { value: 'waitSignature', label: 'Ждали подпись руководителя' },
+      { value: 'lostDoc', label: 'Потеряли документ' },
+      { value: 'waitOriginal', label: 'Контрагент долго ждал оригинал' },
+      { value: 'nothing', label: 'Ничего из этого' },
+    ],
+  },
+  {
+    id: 'priority',
+    icon: Target,
+    title: 'Что для вас важнее всего?',
+    type: 'radio',
+    options: [
+      { value: 'time', label: 'Экономить время' },
+      { value: 'cost', label: 'Сократить расходы' },
+      { value: 'speed', label: 'Быстрее обмениваться документами' },
+      { value: 'archive', label: 'Избавиться от бумажного архива' },
+    ],
+  },
+];
+
+export default function EDOCalculator() {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [answers, setAnswers] = useState<Answer>({});
+  const [results, setResults] = useState<Results | null>(null);
+
+  // Для полностью электронного сценария бумажный блок не показывается вообще.
+  const visibleQuestions = questions.filter((question) => {
+    const isPaperOnlyQuestion = question.id === 'paperProcess';
+    return !(isPaperOnlyQuestion && answers.workMethod === 'digitalOnly');
+  });
+  const currentQuestion = visibleQuestions[currentStep];
+  const rawAnswer = answers[currentQuestion.id as keyof Answer];
+  const isAnswered = Array.isArray(rawAnswer) ? rawAnswer.length > 0 : Boolean(rawAnswer);
+  const progress = ((currentStep + 1) / visibleQuestions.length) * 100;
+  const QuestionIcon = currentQuestion.icon as LucideIcon;
+  const isAlreadyOnEDO = answers.workMethod === 'digitalOnly';
+
+  const handleAnswer = (value: string) => {
+    if (currentQuestion.type === 'radio') {
+      setAnswers({ ...answers, [currentQuestion.id]: value });
+    }
+  };
+
+  const handleCheckbox = (value: string) => {
+    const current = (answers[currentQuestion.id as keyof Answer] as string[]) || [];
+    const updated = current.includes(value)
+      ? current.filter(v => v !== value)
+      : [...current, value];
+    setAnswers({ ...answers, [currentQuestion.id]: updated });
+  };
+
+  const handleNext = () => {
+    if (currentStep < visibleQuestions.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      calculateResults();
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const calculateResults = () => {
+    // Базовые расчёты
+    const invoiceMultipliers: Record<string, number> = {
+      low: 10,
+      medium: 35,
+      high: 75,
+      veryHigh: 150,
+    };
+
+    const timeMultipliers: Record<string, number> = {
+      quick: 5,
+      normal: 7.5,
+      slow: 15,
+      verySlow: 25,
+    };
+
+    const invoicesPerMonth = invoiceMultipliers[answers.invoicesPerMonth || 'medium'] || 35;
+    const timePerInvoice = timeMultipliers[answers.timePerInvoice || 'normal'] || 7.5;
+
+    // Расчёт экономии времени
+    let processSteps = (answers.paperProcess as string[])?.length || 0;
+    if (processSteps === 0) processSteps = 3;
+
+    const monthlySavingsMinutes = invoicesPerMonth * timePerInvoice * (processSteps / 6);
+    const monthlySavingsHours = Math.round(monthlySavingsMinutes / 60);
+
+    // Документы, которые не будут напечатаны
+    const invoicesNotPrinted = (answers.paperProcess as string[])?.includes('print')
+      ? invoicesPerMonth
+      : Math.round(invoicesPerMonth * 0.7);
+
+    // Расчёт готовности к ЭДО
+    let readinessPct = 50; // Базовая готовность
+
+    // Добавляем баллы за ответы
+    if (answers.workMethod === 'mixed') readinessPct += 15;
+    if (answers.workMethod === 'digitalOnly') readinessPct += 30;
+    if ((answers.paperProcess as string[])?.length >= 4) readinessPct += 10;
+    if ((answers.problems as string[])?.length >= 3) readinessPct += 15;
+
+    readinessPct = Math.min(readinessPct, 95);
+
+    // Определяем уровень готовности
+    let readinessLevel: 'high' | 'medium' | 'low' = 'low';
+    if (readinessPct >= 80) readinessLevel = 'high';
+    else if (readinessPct >= 60) readinessLevel = 'medium';
+
+    // Рекомендации
+    const recommendations: string[] = [];
+
+    if (answers.workMethod === 'digitalOnly') {
+      recommendations.push('Вы уже работаете в ЭДО — теперь главное понять, насколько понятна и удобна EDI-система вашего провайдера.');
+      recommendations.push('Проверьте, насколько быстро сотрудники находят документы, подключают контрагентов и обрабатывают входящие.');
+    }
+
+    if (answers.workMethod === 'paperOnly') {
+      recommendations.push('Начните с внедрения электронного документооборота для основных операций.');
+    }
+    if ((answers.problems as string[])?.includes('printerJam') || (answers.problems as string[])?.includes('noPaper')) {
+      recommendations.push('Проблемы с печатью — это сигнал к переходу на ЭДО.');
+    }
+    if ((answers.problems as string[])?.includes('lostDoc')) {
+      recommendations.push('Электронный архив предотвратит потерю документов.');
+    }
+    if ((answers.problems as string[])?.includes('waitOriginal')) {
+      recommendations.push('ЭДО позволит обмениваться документами мгновенно.');
+    }
+    if (answers.priority === 'time' && !isAlreadyOnEDO) {
+      recommendations.push('Экономия времени — главное преимущество ЭДО для вашей компании.');
+    }
+    if (answers.priority === 'cost') {
+      recommendations.push('ЭДО снизит расходы на печать, доставку и хранение.');
+    }
+
+    if (recommendations.length === 0) {
+      recommendations.push('Ваша компания готова к переходу на электронные накладные.');
+    }
+
+    setResults({
+      monthlySavingsHours: isAlreadyOnEDO ? 0 : monthlySavingsHours,
+      invoicesNotPrinted: isAlreadyOnEDO ? 0 : invoicesNotPrinted,
+      readinessPct: isAlreadyOnEDO ? 100 : readinessPct,
+      readinessLevel: isAlreadyOnEDO ? 'high' : readinessLevel,
+      recommendations,
+    });
+  };
+
+  const handleRestart = () => {
+    setCurrentStep(0);
+    setAnswers({});
+    setResults(null);
+  };
+
+  if (results) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white py-12 px-4">
+        <div className="max-w-2xl mx-auto">
+          {/* Заголовок результатов */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
+              <CheckCircle2 className="w-8 h-8 text-green-600" />
+            </div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">Готово!</h1>
+            <p className="text-gray-600">По вашим ответам:</p>
+          </div>
+
+          {/* Карточки результатов */}
+          {isAlreadyOnEDO ? (
+            <Card className="mb-8 overflow-hidden border-0 bg-slate-900 p-7 text-white shadow-xl shadow-slate-900/10">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-500 text-white">
+                  <CheckCircle2 className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-orange-300">Вы уже на ЭДО</p>
+                  <h2 className="font-display mb-3 text-2xl font-bold">Теперь главное — удобство вашей EDI-системы</h2>
+                  <p className="text-sm leading-6 text-slate-300">Проверьте, насколько понятен интерфейс провайдера, быстро ли подключаются контрагенты и удобно ли обрабатывать входящие документы.</p>
+                </div>
+              </div>
+
+            </Card>
+          ) : null}
+          {!isAlreadyOnEDO && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            {/* Экономия времени */}
+            <Card className="p-6 border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-lg bg-orange-100">
+                    <Clock className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Экономия в месяц</p>
+                    <p className="text-3xl font-bold text-gray-900">{isAlreadyOnEDO ? '—' : results.monthlySavingsHours}</p>
+                    <p className="text-xs text-gray-500">{isAlreadyOnEDO ? 'уже работаете в ЭДО' : 'часов'}</p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Документы */}
+            <Card className="p-6 border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-lg bg-blue-100">
+                    <FileText className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Не будет напечатано</p>
+                    <p className="text-3xl font-bold text-gray-900">{isAlreadyOnEDO ? '—' : results.invoicesNotPrinted}</p>
+                    <p className="text-xs text-gray-500">{isAlreadyOnEDO ? 'бумажный процесс не используется' : 'документов в месяц'}</p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Готовность к ЭДО */}
+            <Card className="p-6 border-0 shadow-lg hover:shadow-xl transition-shadow md:col-span-2">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <p className="text-sm text-gray-600 mb-2">Уровень готовности к ЭДО</p>
+                  <div className="flex items-baseline gap-2">
+                    <p className="text-4xl font-bold text-gray-900">{results.readinessPct}%</p>
+                    <div className="flex items-center gap-2">
+                      {results.readinessLevel === 'high' && (
+                        <>
+                          <CheckCircle2 className="w-5 h-5 text-green-600" />
+                          <span className="text-sm font-semibold text-green-600">Готова</span>
+                        </>
+                      )}
+                      {results.readinessLevel === 'medium' && (
+                        <>
+                          <AlertCircle className="w-5 h-5 text-yellow-600" />
+                          <span className="text-sm font-semibold text-yellow-600">Переходный период</span>
+                        </>
+                      )}
+                      {results.readinessLevel === 'low' && (
+                        <>
+                          <AlertCircle className="w-5 h-5 text-red-600" />
+                          <span className="text-sm font-semibold text-red-600">Нужна подготовка</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <Progress value={results.readinessPct} className="h-2" />
+            </Card>
+          </div>
+          )}
+
+          {/* Рекомендации */}
+          <Card className="p-6 border-0 shadow-lg mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <Zap className="w-5 h-5 text-orange-600" />
+              <h3 className="text-lg font-semibold text-gray-900">Рекомендации</h3>
+            </div>
+            <ul className="space-y-3">
+              {results.recommendations.map((rec, idx) => (
+                <li key={idx} className="flex gap-3 text-sm text-gray-700">
+                  <span className="text-orange-600 font-bold">✓</span>
+                  <span>{rec}</span>
+                </li>
+              ))}
+            </ul>
+          </Card>
+
+          {/* Финальный CTA — единая формулировка EDIDOC для любого результата */}
+          <Card className="mb-8 border-0 bg-orange-50 p-6 shadow-lg shadow-orange-100/60">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-display text-lg font-bold text-gray-900">EDIDOC — аттестованный EDI-провайдер Беларуси</p>
+                <p className="mt-2 text-sm leading-6 text-gray-700">Регистрация в 2 клика, все входящие бесплатны — без тарификации и абонентской платы.</p>
+              </div>
+              <a href="https://edidoc.by/" target="_blank" rel="noreferrer" className="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-orange-600 px-5 text-sm font-semibold text-white transition hover:bg-orange-700">Перейти в EDIDOC <ChevronRight className="ml-2 h-4 w-4" /></a>
+            </div>
+          </Card>
+
+          {/* Кнопки */}
+          <div className="flex gap-4">
+            <Button
+              onClick={handleRestart}
+              variant="outline"
+              className="flex-1 h-12"
+            >
+              <ChevronLeft className="w-4 h-4 mr-2" />
+              Изменить ответы
+            </Button>
+            <Button
+              onClick={handleRestart}
+              className="flex-1 h-12 bg-orange-600 hover:bg-orange-700"
+            >
+              Начать заново
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white py-12 px-4">
+      <div className="max-w-2xl mx-auto">
+        {/* Логотип */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-orange-600 shadow-lg shadow-orange-600/20 mb-4 overflow-hidden">
+            <img src="/edo_logo.png" alt="ЭДО" className="w-10 h-10 object-contain" />
+          </div>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-orange-600 mb-2">Путь к эффективности</p>
+          <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">Калькулятор ЭДО</h1>
+          <p className="text-gray-600">За 2 минуты узнайте, сколько времени сможет сэкономить ваша компания</p>
+        </div>
+
+        {/* Прогресс-бар — фирменная rail-метафора движения к результату */}
+        <div className="mb-8 rounded-2xl border border-orange-100 bg-white/80 p-4 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Ваш расчёт</p>
+              <p className="font-display text-sm font-semibold text-gray-900">Шаг {currentStep + 1} из {questions.length}</p>
+            </div>
+            <div className="text-right">
+              <p className="font-display text-xl font-bold text-orange-600">{Math.round(progress)}%</p>
+              <p className="text-xs text-gray-500">до результата</p>
+            </div>
+          </div>
+          <div className="relative mb-3">
+            <Progress value={progress} className="h-3 bg-orange-100 [&>div]:bg-orange-600" />
+          </div>
+          <div className="grid grid-cols-7 gap-1">
+              {visibleQuestions.map((question, index) => {
+              const isComplete = index < currentStep;
+              const isCurrent = index === currentStep;
+              return (
+                <div key={question.id} className="flex flex-col items-center gap-1">
+                  <div className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold transition-colors ${isComplete ? 'bg-emerald-500 text-white' : isCurrent ? 'bg-orange-600 text-white ring-4 ring-orange-100' : 'bg-orange-100 text-orange-700'}`}>
+                    {isComplete ? '✓' : index + 1}
+                  </div>
+                  <span className={`hidden text-[9px] font-medium sm:block ${isCurrent ? 'text-orange-700' : 'text-gray-400'}`}>{index === currentStep ? 'сейчас' : isComplete ? 'готово' : 'дальше'}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Карточка вопроса */}
+        <Card className="p-8 border-0 shadow-lg mb-8">
+          <div className="mb-6">
+            <div className="mb-4 flex items-start gap-4">
+              <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-orange-600">
+                <QuestionIcon className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-orange-600">Уточним детали</p>
+                <h2 className="font-display text-2xl font-bold leading-tight text-gray-900">{currentQuestion.title}</h2>
+              </div>
+            </div>
+            {currentQuestion.description && (
+              <p className="ml-15 text-sm text-gray-600">{currentQuestion.description}</p>
+            )}
+          </div>
+
+          {/* Варианты ответов */}
+          <div className="space-y-3 mb-8">
+            {currentQuestion.type === 'radio' && (
+              <RadioGroup value={answers[currentQuestion.id as keyof Answer] as string || ''} onValueChange={handleAnswer}>
+                {currentQuestion.options?.map((option, optionIndex) => {
+                  const selected = answers[currentQuestion.id as keyof Answer] === option.value;
+                  return (
+                    <div key={option.value} className={`group flex items-center gap-3 rounded-2xl border p-4 transition-all duration-200 ${selected ? 'border-orange-500 bg-orange-50 shadow-sm shadow-orange-100' : 'border-gray-100 bg-gray-50/70 hover:-translate-y-0.5 hover:border-orange-200 hover:bg-white hover:shadow-md'}`}>
+                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${selected ? 'bg-orange-600 text-white' : 'bg-white text-gray-400 shadow-sm'}`}>{String(optionIndex + 1).padStart(2, '0')}</div>
+                      <RadioGroupItem value={option.value} id={option.value} className="shrink-0" />
+                      <Label htmlFor={option.value} className="flex-1 cursor-pointer font-medium text-gray-800">{option.label}</Label>
+                      <ChevronRight className={`h-4 w-4 transition-transform ${selected ? 'translate-x-0.5 text-orange-600' : 'text-gray-300 group-hover:translate-x-0.5 group-hover:text-orange-400'}`} />
+                    </div>
+                  );
+                })}
+              </RadioGroup>
+            )}
+
+            {currentQuestion.type === 'checkbox' && (
+              <div className="space-y-3">
+                {currentQuestion.options?.map((option, optionIndex) => {
+                  const selected = (answers[currentQuestion.id as keyof Answer] as string[])?.includes(option.value) || false;
+                  return (
+                    <div key={option.value} className={`group flex items-center gap-3 rounded-2xl border p-4 transition-all duration-200 ${selected ? 'border-blue-500 bg-blue-50 shadow-sm shadow-blue-100' : 'border-gray-100 bg-gray-50/70 hover:-translate-y-0.5 hover:border-blue-200 hover:bg-white hover:shadow-md'}`}>
+                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${selected ? 'bg-blue-600 text-white' : 'bg-white text-gray-400 shadow-sm'}`}>{String(optionIndex + 1).padStart(2, '0')}</div>
+                      <Checkbox
+                        id={option.value}
+                        checked={selected}
+                        onCheckedChange={() => handleCheckbox(option.value)}
+                        className="shrink-0"
+                      />
+                      <Label htmlFor={option.value} className="flex-1 cursor-pointer font-medium text-gray-800">{option.label}</Label>
+                      <CheckCircle2 className={`h-4 w-4 transition-colors ${selected ? 'text-blue-600' : 'text-gray-200 group-hover:text-blue-300'}`} />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Кнопки навигации */}
+          <div className="flex gap-4">
+            <Button
+              onClick={handlePrev}
+              variant="outline"
+              disabled={currentStep === 0}
+              className="flex-1 h-12"
+            >
+              <ChevronLeft className="w-4 h-4 mr-2" />
+              Назад
+            </Button>
+            <Button
+              onClick={handleNext}
+              disabled={!isAnswered}
+              className="flex-1 h-12 bg-orange-600 hover:bg-orange-700 disabled:opacity-50"
+            >
+              {currentStep === visibleQuestions.length - 1 ? 'Получить результаты' : 'Далее'}
+              <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        </Card>
+
+        {/* Подвал */}
+          <p className="text-center text-sm text-gray-500">
+          Ответьте на этот вопрос — и расчёт станет точнее. Следующий шаг уже рядом.
+        </p>
+      </div>
+    </div>
+  );
+}

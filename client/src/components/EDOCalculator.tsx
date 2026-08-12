@@ -410,7 +410,7 @@ export default function EDOCalculator() {
         {/* Логотип */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-orange-600 shadow-lg shadow-orange-600/20 mb-4 overflow-hidden">
-            <img src="/edo_logo.png" alt="ЭДО" className="w-10 h-10 object-contain" />
+            <img src={`${import.meta.env.BASE_URL}edo_logo.png`} alt="ЭДО" className="w-10 h-10 object-contain" />
           </div>
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-orange-600 mb-2">Путь к эффективности</p>
           <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">Калькулятор ЭДО</h1>

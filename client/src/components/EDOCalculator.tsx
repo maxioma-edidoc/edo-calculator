@@ -410,7 +410,8 @@ export default function EDOCalculator() {
           <div className="flex">
             <Button
               onClick={handleRestart}
-              className="w-full h-12 bg-[#ED6C0E] hover:bg-[#C85A0B]"
+              variant="outline"
+              className="w-full h-12 border-[#ED6C0E] bg-transparent text-black hover:border-[#C85A0B] hover:bg-transparent hover:text-black focus-visible:ring-[#ED6C0E]"
             >
               Начать заново
             </Button>

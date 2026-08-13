@@ -417,7 +417,7 @@ export default function EDOCalculator() {
               <div className="pt-2 border-t border-[#FBE3D1] flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="font-semibold text-gray-900 text-sm">EDIDOC — аттестованный EDI-провайдер Беларуси</p>
-                  <p className="text-xs text-gray-600">Регистрация в 2 клика, все входящие бесплатны — без тарификации и абон. платы.</p>
+                  <p className="text-xs text-gray-600">Регистрация в 2 клика, быстрая поддержка и стабильный обмен документами.</p>
                 </div>
                 <a
                   href="https://edidoc.by/"

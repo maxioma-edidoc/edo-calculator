@@ -425,7 +425,7 @@ export default function EDOCalculator() {
                   rel="noreferrer"
                   className="inline-flex h-12 shrink-0 items-center justify-center rounded-xl bg-[#ED6C0E] px-6 text-sm font-semibold text-white shadow-md shadow-[#ED6C0E]/20 transition hover:bg-[#C85A0B]"
                 >
-                  {isAlreadyOnEDO ? 'Проверить EDIDOC' : answers.workMethod === 'mixed' ? 'Ускорить обмен в EDIDOC' : 'Начать работу в EDIDOC'}
+                                    Перейти на EDIDOC
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </a>
               </div>

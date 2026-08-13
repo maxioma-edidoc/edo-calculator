@@ -395,14 +395,40 @@ export default function EDOCalculator() {
             </ul>
           </Card>
 
-          {/* Финальный CTA — единая формулировка EDIDOC для любого результата */}
+          {/* Персональный мост к действию (связка расчета с переходом в EDIDOC) */}
           <Card className="mb-8 border-0 bg-[#FFF6EF] p-6 shadow-lg shadow-[#FBE3D1]/60">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-4">
               <div>
-                <p className="font-display text-lg font-bold text-gray-900">EDIDOC — аттестованный EDI-провайдер Беларуси</p>
-                <p className="mt-2 text-sm leading-6 text-gray-700">Регистрация в 2 клика, все входящие бесплатны — без тарификации и абонентской платы.</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ED6C0E] mb-1">Следующий шаг для вашей компании</p>
+                <h3 className="font-display text-lg font-bold text-gray-900">
+                  {isAlreadyOnEDO
+                    ? 'Оцените удобство и скорость вашей EDI-системы'
+                    : answers.workMethod === 'mixed'
+                    ? 'Переведите оставшиеся бумажные документы в электронный вид'
+                    : 'Избавьтесь от рутины с бумажными накладными'}
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-gray-700">
+                  {isAlreadyOnEDO
+                    ? 'Вы уже работаете с электронными документами. Убедитесь, что ваш провайдер не берёт плату за входящие и подключает партнёров за пару кликов.'
+                    : `Каждый месяц вы теряете около ${results.monthlySavingsHours} часов на бумажных операциях. EDIDOC устраняет эти затраты за счёт прямой интеграции и бесплатного приёма документов.`}
+                </p>
               </div>
-              <a href="https://edidoc.by/" target="_blank" rel="noreferrer" className="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-[#ED6C0E] px-5 text-sm font-semibold text-white transition hover:bg-[#C85A0B]">Перейти в EDIDOC <ChevronRight className="ml-2 h-4 w-4" /></a>
+
+              <div className="pt-2 border-t border-[#FBE3D1] flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">EDIDOC — аттестованный EDI-провайдер Беларуси</p>
+                  <p className="text-xs text-gray-600">Регистрация в 2 клика, все входящие бесплатны — без тарификации и абон. платы.</p>
+                </div>
+                <a
+                  href="https://edidoc.by/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-12 shrink-0 items-center justify-center rounded-xl bg-[#ED6C0E] px-6 text-sm font-semibold text-white shadow-md shadow-[#ED6C0E]/20 transition hover:bg-[#C85A0B]"
+                >
+                  {isAlreadyOnEDO ? 'Проверить EDIDOC' : answers.workMethod === 'mixed' ? 'Ускорить обмен в EDIDOC' : 'Начать работу в EDIDOC'}
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </a>
+              </div>
             </div>
           </Card>
 

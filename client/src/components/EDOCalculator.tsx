@@ -152,6 +152,9 @@ export default function EDOCalculator() {
   };
 
   const handleNext = () => {
+    if (currentStep === 0 && typeof window !== 'undefined' && (window as any).umami) {
+      (window as any).umami.track('calculator_start');
+    }
     if (currentStep < visibleQuestions.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -166,6 +169,11 @@ export default function EDOCalculator() {
   };
 
   const calculateResults = () => {
+    // Трекинг в Umami: получение результата
+    if (typeof window !== 'undefined' && (window as any).umami) {
+      (window as any).umami.track('calculator_complete', { workMethod: answers.workMethod || 'unknown' });
+    }
+
     // Базовые расчёты
     const invoiceMultipliers: Record<string, number> = {
       low: 10,
@@ -270,6 +278,9 @@ export default function EDOCalculator() {
   };
 
   const handleRestart = () => {
+    if (typeof window !== 'undefined' && (window as any).umami) {
+      (window as any).umami.track('calculator_restart');
+    }
     setCurrentStep(0);
     setAnswers({});
     setResults(null);
@@ -423,9 +434,14 @@ export default function EDOCalculator() {
                   href="https://edidoc.by/"
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() => {
+                    if (typeof window !== 'undefined' && (window as any).umami) {
+                      (window as any).umami.track('edidoc_cta_click');
+                    }
+                  }}
                   className="inline-flex h-12 shrink-0 items-center justify-center rounded-xl bg-[#ED6C0E] px-6 text-sm font-semibold text-white shadow-md shadow-[#ED6C0E]/20 transition hover:bg-[#C85A0B]"
                 >
-                                    Перейти на EDIDOC
+                  Перейти на EDIDOC
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </a>
               </div>

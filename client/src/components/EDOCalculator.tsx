@@ -136,10 +136,22 @@ export default function EDOCalculator() {
   const [answers, setAnswers] = useState<Answer>({});
   const [results, setResults] = useState<Results | null>(null);
 
-  // Для полностью электронного сценария бумажный блок не показывается вообще.
+  // Условная фильтрация вопросов
   const visibleQuestions = questions.filter((question) => {
     const isPaperOnlyQuestion = question.id === 'paperProcess';
-    return !(isPaperOnlyQuestion && answers.workMethod === 'digitalOnly');
+    const isDirectionQuestion = question.id === 'documentDirection';
+
+    // Бумажный блок пропускается для «Только электронные»
+    if (isPaperOnlyQuestion && answers.workMethod === 'digitalOnly') {
+      return false;
+    }
+
+    // Вопрос о направлении документов показывается только если выбраны «И бумажные, и электронные» или «Только электронные»
+    if (isDirectionQuestion && answers.workMethod === 'paperOnly') {
+      return false;
+    }
+
+    return true;
   });
   const currentQuestion = visibleQuestions[currentStep];
   const rawAnswer = answers[currentQuestion.id as keyof Answer];

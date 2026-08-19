@@ -11,6 +11,7 @@ import { Building2, ChevronRight, ChevronLeft, Clock, FileText, Repeat2, Clipboa
 interface Answer {
   companySize?: string;
   invoicesPerMonth?: string;
+  documentDirection?: string;
   workMethod?: string;
   paperProcess?: string[];
   timePerInvoice?: string;
@@ -47,10 +48,20 @@ const questions = [
     title: 'Сколько накладных оформляет ваша компания в месяц?',
     type: 'radio',
     options: [
-      { value: 'low', label: 'До 20' },
-      { value: 'medium', label: '20–50' },
-      { value: 'high', label: '50–100' },
-      { value: 'veryHigh', label: 'Более 100' },
+      { value: 'p100', label: 'До 100' },
+      { value: 'p500', label: '100–500' },
+      { value: 'p1000', label: '500–1000' },
+      { value: 'p5000', label: '1000–5000' },
+    ],
+  },
+  {
+    id: 'documentDirection',
+    icon: Repeat2,
+    title: 'Документы нужны только на входящих или на исходящих тоже?',
+    type: 'radio',
+    options: [
+      { value: 'incomingOnly', label: 'Только на входящих' },
+      { value: 'both', label: 'И на входящих, и на исходящих' },
     ],
   },
   {
@@ -176,10 +187,10 @@ export default function EDOCalculator() {
 
     // Базовые расчёты
     const invoiceMultipliers: Record<string, number> = {
-      low: 10,
-      medium: 35,
-      high: 75,
-      veryHigh: 150,
+      p100: 50,
+      p500: 300,
+      p1000: 750,
+      p5000: 3000,
     };
 
     const timeMultipliers: Record<string, number> = {
@@ -244,7 +255,10 @@ export default function EDOCalculator() {
       recommendations.push('Проверьте, насколько быстро сотрудники находят документы, подключают контрагентов и обрабатывают входящие.');
     }
 
-    if (answers.workMethod === 'paperOnly') {
+    if (answers.documentDirection === 'incomingOnly') {
+      recommendations.push('Все входящие документы в EDIDOC принимаются полностью бесплатно и без абонентской платы.');
+      recommendations.push('Постепенно начинайте тестировать исходящие документы, чтобы полностью перевести компанию на электронный документооборот.');
+    } else if (answers.workMethod === 'paperOnly') {
       recommendations.push('Начните с внедрения электронного документооборота для основных операций.');
     }
     if ((answers.problems as string[])?.includes('printerJam') || (answers.problems as string[])?.includes('noPaper')) {

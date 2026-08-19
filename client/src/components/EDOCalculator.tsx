@@ -57,11 +57,11 @@ const questions = [
   {
     id: 'documentDirection',
     icon: Repeat2,
-    title: 'Документы нужны только на входящих или на исходящих тоже?',
+    title: 'Формат работы с накладными?',
     type: 'radio',
     options: [
-      { value: 'incomingOnly', label: 'Только на входящих' },
-      { value: 'both', label: 'И на входящих, и на исходящих' },
+      { value: 'incomingOnly', label: 'Только входящие' },
+      { value: 'both', label: 'Входящие и исходящие' },
     ],
   },
   {

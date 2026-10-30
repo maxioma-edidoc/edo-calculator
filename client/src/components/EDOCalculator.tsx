@@ -484,6 +484,26 @@ export default function EDOCalculator() {
               Начать заново
             </Button>
           </div>
+
+          {/* Дополнительный CTA для консультации */}
+          <Card className="mt-6 border-0 bg-slate-900 p-6 text-white shadow-xl shadow-slate-900/10">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#F5A56D]">Нужна помощь с переходом на ЭДО?</p>
+                <h3 className="font-display text-xl font-bold">Обсудите ваш расчёт со специалистом</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-300">Получите консультацию и узнайте, как внедрить ЭДО в вашей компании.</p>
+              </div>
+              <a
+                href="https://edidoc.by/#contact-us"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-12 shrink-0 items-center justify-center rounded-xl bg-[#ED6C0E] px-6 text-sm font-semibold text-white shadow-md shadow-[#ED6C0E]/20 transition hover:bg-[#C85A0B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5A56D] focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+              >
+                Получить консультацию
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </a>
+            </div>
+          </Card>
         </div>
       </div>
     );
